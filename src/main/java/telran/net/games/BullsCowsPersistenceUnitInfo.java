@@ -94,7 +94,10 @@ public class BullsCowsPersistenceUnitInfo
 	@Override
 	public List<String> getManagedClassNames() 
 	{
-		return List.of("telran.net.games.Gamer","telran.net.games.Game","telran.net.games.Move");
+		return List.of("telran.net.games.Gamer",
+				       "telran.net.games.Game",
+				       "telran.net.games.Move",
+				       "telran.net.games.GameGamer");
 	}
 
 	@Override
