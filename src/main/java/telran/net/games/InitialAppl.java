@@ -48,14 +48,14 @@ public class InitialAppl {
 //	List<Game> list=repository.getGamesAverageAgeMore(60);
 //	displayResult(list);
 	
-//	List<GameAndMoves> list=repository.getGameAndWinnerMovesLess(5);
-//	displayResult(list);
+	List<GameMoves> list=repository.getGamesWinnerMovesLessThan(5);
+	displayResult(list);
 	
 //	List<String> list=repository.getGamerMovesInOneGameLess(4);
 //	displayResult(list);
 
-	List<AverageMoves> list=repository.getAverageMoves(1);
-	displayResult(list);
+//	List<AverageMoves> list=repository.getAverageMoves(1);
+//	displayResult(list);
 	}
 	
 	private static <T> void displayResult(List <T> list)

@@ -6,45 +6,37 @@ import java.util.stream.Collectors;
 
 import jakarta.persistence.*;
 
-public class JpqlQueriesRepository 
-{
+import jakarta.persistence.*;
+public class JpqlQueriesRepository {
 	private EntityManager em;
 
-	public JpqlQueriesRepository(EntityManager em)
-	{	
+	public JpqlQueriesRepository(EntityManager em) {
 		this.em = em;
 	}
-	
-	public List<Game> getGamesFinished(boolean isFinished)
-	{
-		TypedQuery<Game> query=em.createQuery(
+	public List<Game> getGamesFinished(boolean isFinished) {
+		TypedQuery<Game> query = em.createQuery(
 				"select game from Game game where is_finished=?1",
 				Game.class);
-		List <Game> res=query.setParameter(1, isFinished).getResultList();
+		List<Game> res = query.setParameter(1, isFinished).getResultList();
 		return res;
 	}
-	
-	public List<DateTimeSequence> getDateTimeSequence(LocalTime time)
-	{
-		TypedQuery<DateTimeSequence> query=em.createQuery(
-				"select date, sequence "
-				+ "from Game where cast(date as time) <:time"
-				,DateTimeSequence.class);
-		List<DateTimeSequence> res=query.setParameter("time", time).getResultList();
+	public List<DateTimeSequence> getDateTimeSequence(LocalTime time) {
+		TypedQuery<DateTimeSequence> query =
+				em.createQuery("select date, sequence "
+						+ "from Game where cast(date as time) < :time",
+						DateTimeSequence.class);
+		List<DateTimeSequence> res = query.setParameter("time", time).getResultList();
 		return res;
 	}
-	
-	public List<Integer> getBullsinMovesGamersBornAfter(LocalDate afterDate)
-	{
-		TypedQuery<Integer> query=em.createQuery(
-				"select bulls from Move where gameGamer.gamer.birthdate > :afterDate",
-				Integer.class);
-		List<Integer> res=query.setParameter("afterDate", afterDate).getResultList();
+	public List<Integer> getBullsInMovesGamersBornAfter(LocalDate afterDate) {
+		TypedQuery<Integer> query = em.createQuery(
+				"select bulls from Move where gameGamer.gamer.birthdate > "
+				+ "?1", Integer.class);
+		List<Integer> res = query.setParameter(1, afterDate).getResultList();
 		return res;
+		
 	}
-	
-	public List<MinMaxAmount> getDistributionGamesMoves(int interval)
-	{
+	public List<MinMaxAmount> getDistributionGamesMoves(int interval) {
 		TypedQuery<MinMaxAmount> query = em.createQuery(
 				"select floor(game_moves / :interval) * :interval as min_moves, "
 				+ "floor(game_moves / :interval) * :interval + (:interval - 1) as max_moves, "
@@ -56,66 +48,41 @@ public class JpqlQueriesRepository
 		List<MinMaxAmount> res = query.setParameter("interval", interval).getResultList();
 		return res;
 	}
-	
-	public List<Game> getGamesAverageAgeMore(int ageMore)
-	{
+	public List<Game> getGamesGamersAvgAgeGreaterThan(double avgAge) {
 		TypedQuery<Game> query = em.createQuery(
-		"select game from Game game where id in "	
-		+ "(select gg.game.id from GameGamer gg group by gg.game.id "
-		+ "having avg(year(current_date)-year(gg.gamer.birthdate)) > :ageMore)",
-		Game.class);
-		List<Game> res=query.setParameter("ageMore", ageMore).getResultList();
-		return res;
+		        "select g from Game g where id in (" +
+		        "select game.id from GameGamer   " +
+		        "group by game.id " +
+		        "having avg(extract(year from current_date) - extract(year from gamer.birthdate)) > ?1)",
+		        Game.class
+		    );
+		    return query.setParameter(1, avgAge).getResultList();
 	}
-	
-	public List<GameAndMoves> getGameAndWinnerMovesLess(int minMoves)
-	{
-		TypedQuery<GameAndMoves> query = em.createQuery(
-		"select new telran.net.games.GameAndMoves( gg.game.id, count(*)) "
-		+ "from GameGamer gg join Move mv on mv.gameGamer.id=gg.id "
-		+ "where gg.is_winner "
-		+ "group by gg.game.id having count(mv) < :minMoves",			
-		GameAndMoves.class);
-		List<GameAndMoves> res=query.setParameter("minMoves", minMoves).getResultList();
-		return res;
+	public List<GameMoves> getGamesWinnerMovesLessThan(int nMoves) {
+		TypedQuery<GameMoves> query = em.createQuery(
+				"select gameGamer.game.id as gameId, count(*) as moves from "
+				+ "Move  where gameGamer.is_winner=true "
+				+ "group by gameId having count(*) < ?1", 
+				GameMoves.class);
+		return query.setParameter(1, nMoves).getResultList();
 	}
-	
-	public List<String> getGamerMovesInOneGameLess(int movesLess)
-	{
+	public List<String> getGamersGameMovesLessThan(int nMoves) {
 		TypedQuery<String> query = em.createQuery(
-		"select distinct gg.gamer.username "
-		+ "from GameGamer gg "
-		+ "join Move mv on gg.id=mv.gameGamer.id "
-		+ "group by gg.game.id, gg.gamer.username having count(*) < :movesLess",
-		String.class);
-		List<String> res=query.setParameter("movesLess", movesLess).getResultList();
-		return res;
+				"select distinct gameGamer.gamer.username as username from "
+				+ "Move group by gameGamer.game.id, username"
+				+ " having count(*) < ?1 ",
+				String.class);
+		return query.setParameter(1,  nMoves).getResultList();
 	}
-	
-	public List<AverageMoves> getAverageMoves(int accuracy)
-	{
-		
-// round not work in Jpql. I don't know how make accuracy in Jpql. I write function.
-		TypedQuery<AverageMoves> query = em.createQuery(	
-		"select new telran.net.games.AverageMoves(gg.game.id, avg(mv.moveCount)) "
-		+ "from GameGamer gg join "
-		+ "(select mv.gameGamer.id as gameGamerId, count(mv) as moveCount " 
-		+ "from Move mv group by mv.gameGamer.id) "
-		+ "mv on mv.gameGamerId = gg.id "
-		+ "group by gg.game.id ",
-		AverageMoves.class);
-		List<AverageMoves> resFirst = query.getResultList();
-		List<AverageMoves> res=resFirst.stream()
-		.map( (aM)->new AverageMoves(aM.id(), myAccuracy(aM.moves(),accuracy)))  
-		.collect(Collectors.toList() );
-		return res;
+	public List<GameAvgMoves> getGamesAvgMoves() {
+		TypedQuery<GameAvgMoves> query = em.createQuery(
+				"select gameId, round(avg(moves),1) from "
+				+ "(select gameGamer.game.id as gameId, count(*) as moves"
+				+ " from Move  group by gameId, gameGamer.gamer.username) "
+				+ "group by gameId",
+				GameAvgMoves.class);
+		return query.getResultList();
 	}
-	
-	private double myAccuracy(double value, int accuracy)
-	{
-		double sc=Math.pow(10, accuracy);
-		return Math.round(value*sc)/sc;
-	}
-	
 	
 }
+

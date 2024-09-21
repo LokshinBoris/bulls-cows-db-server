@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class Move
 	{
 		@Id
+		@GeneratedValue(strategy=GenerationType.IDENTITY)
 		private long id;
 		private String sequence;
 		private int bulls;
@@ -19,9 +20,34 @@ public class Move
 		{
 			
 		}
-
+		
+		public Move(String sequence, int bulls, int cows, GameGamer gameGamer) 
+		{
+			super();
+			this.sequence = sequence;
+			this.bulls = bulls;
+			this.cows = cows;
+			this.gameGamer = gameGamer;
+		}
+		
 		public long getId() {
 			return id;
+		}
+
+		public void setSequence(String sequence) {
+			this.sequence = sequence;
+		}
+
+		public void setBulls(int bulls) {
+			this.bulls = bulls;
+		}
+
+		public void setCows(int cows) {
+			this.cows = cows;
+		}
+
+		public void setGameGamer(GameGamer gameGamer) {
+			this.gameGamer = gameGamer;
 		}
 
 		public String getSequence() {
