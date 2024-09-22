@@ -129,12 +129,10 @@ public class BullsCowsRepositoryJpa implements BullsCowsRepository {
 	@Override
 	public void createGameGamerMove(MoveDto moveDto) 
 	{
-		GameGamer gameGamer = em.find(GameGamer.class, moveDto.gameId());
+		GameGamer gameGamer = getGameGamer(moveDto.gameId(),moveDto.username());
 		if(gameGamer != null)
 		{
-			Integer bulls=Integer.valueOf(moveDto.bulls());
-			Integer cows=Integer.valueOf(moveDto.cows());
-			Move move=new Move(moveDto.sequence(),bulls,cows,gameGamer);
+			Move move=new Move(moveDto.sequence(),moveDto.bulls(),moveDto.cows(),gameGamer);
 			createObject(move);
 		}
 	}
