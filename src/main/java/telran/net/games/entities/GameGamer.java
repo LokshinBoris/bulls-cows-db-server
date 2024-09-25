@@ -1,18 +1,8 @@
-package telran.net.games;
-
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
+package telran.net.games.entities;
+import jakarta.persistence.*;
 @Entity
-@Table(name="game_gamer")
+@Table(name="game_gamer",uniqueConstraints =
+{@UniqueConstraint(columnNames = {"game_id", "gamer_id"} )})
 public class GameGamer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,11 +21,6 @@ public class GameGamer {
 	public boolean isWinner() {
 		return isWinner;
 	}
-	
-	
-	public void setWinner(boolean isWinner) {
-		this.isWinner = isWinner;
-	}
 	public Game getGame() {
 		return game;
 	}
@@ -49,6 +34,9 @@ public class GameGamer {
 		this.isWinner = isWinner;
 		this.game = game;
 		this.gamer = gamer;
+	}
+	public void setWinner(boolean isWinner) {
+		this.isWinner = isWinner;
 	}
 	
 	

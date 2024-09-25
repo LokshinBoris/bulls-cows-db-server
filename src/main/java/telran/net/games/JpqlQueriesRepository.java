@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.*;
-
+import telran.net.games.entities.Game;
 import jakarta.persistence.*;
 public class JpqlQueriesRepository {
 	private EntityManager em;

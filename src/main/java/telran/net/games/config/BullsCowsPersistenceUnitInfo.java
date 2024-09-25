@@ -1,4 +1,4 @@
-package telran.net.games;
+package telran.net.games.config;
 
 import java.net.URL;
 import java.util.List;
@@ -94,10 +94,10 @@ public class BullsCowsPersistenceUnitInfo
 	@Override
 	public List<String> getManagedClassNames() 
 	{
-		return List.of("telran.net.games.Gamer",
-				       "telran.net.games.Game",
-				       "telran.net.games.Move",
-				       "telran.net.games.GameGamer");
+		return List.of("telran.net.games.entities.Gamer",
+				       "telran.net.games.entities.Game",
+				       "telran.net.games.entities.Move",
+				       "telran.net.games.entities.GameGamer");
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import java.util.List;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import jakarta.persistence.*;
+import telran.net.games.config.BullsCowsPersistenceUnitInfo;
 
 public class InitialAppl {
 
