@@ -69,8 +69,6 @@ public class BullsCowsServiceImpl implements BullsCowsService {
 	 */
 	public void gamerJoinGame(long gameId, String username) 
 	{
-		Game game=bcRepository.getGame(gameId);
-		Gamer gamer=bcRepository.getGamer(username);
 		bcRepository.createGameGamer(gameId, username);
 	}
 	@Override
@@ -102,7 +100,6 @@ public class BullsCowsServiceImpl implements BullsCowsService {
 			throw new IncorrectMoveSequenceException(sequence);
 		}
 		Game game=bcRepository.getGame(gameId);
-		Gamer gamer=bcRepository.getGamer(username);
 		if(!bcRepository.isGameStarted(gameId))
 		{
 			throw new GameNotStartedException(gameId);
@@ -113,7 +110,7 @@ public class BullsCowsServiceImpl implements BullsCowsService {
 		}
 		MoveData moveData=bcRunner.moveProcessing(sequence, game.getSequence());
 		bcRepository.createGameGamerMove(
-				new MoveDto(gameId,username,moveData.Sequence(),moveData.bulls(),moveData.Cows()));
+				new MoveDto(gameId,username,moveData.sequence(),moveData.bulls(),moveData.cows()));
 		if(bcRunner.checkGameFinished(moveData))
 		{
 			bcRepository.setIsFinished(gameId);
@@ -152,9 +149,15 @@ public class BullsCowsServiceImpl implements BullsCowsService {
 	 * @return To be guessed sequence
 	 * No Exceptions, that is implied that at the test gameId exists
 	 */
-	String getSequence(long gameId) {
+	public String getSequence(long gameId) {
 		Game game = bcRepository.getGame(gameId);
 		return game.getSequence();
 	}
 	
+	@Override
+	public String loginGamer(String username) 
+	{
+		Gamer gamer = bcRepository.getGamer(username);
+		return gamer.getUsername();
+	}
 }

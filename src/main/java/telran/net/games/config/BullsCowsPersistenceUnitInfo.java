@@ -63,7 +63,7 @@ public class BullsCowsPersistenceUnitInfo
 	public DataSource getNonJtaDataSource()
 	{
 		HikariDataSource ds = new HikariDataSource();
-		ds.setJdbcUrl("jdbc:postgresql://44.204.228.83/postgres");
+		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
 		ds.setPassword("pinpinpin");
 		ds.setUsername("postgres");
 		ds.setDriverClassName("org.postgresql.Driver");

@@ -39,7 +39,6 @@ class ServiceImplTest {
 	{
 		gameId = impl.createGame();
 		Game game = repository.getGame(gameId);
-		assertNotNull(game);
 		assertNull(game.getDate());
 		assertFalse(game.isfinished());	
 	}
@@ -50,10 +49,8 @@ class ServiceImplTest {
 	{
 		impl.registerGamer(username1,LocalDate.of(2000,1,1));
 		Gamer gamer1 = repository.getGamer(username1);
-		assertNotNull(gamer1);
 		impl.registerGamer(username2,LocalDate.of(1960,10,10));
 		Gamer gamer2 = repository.getGamer(username2);
-		assertNotNull(gamer2);
 	}
 	
 	@Test

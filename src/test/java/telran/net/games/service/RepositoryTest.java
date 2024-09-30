@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import telran.net.games.config.BullsCowsPersistenceUnitInfo;
 import telran.net.games.entities.Game;
 import telran.net.games.entities.Gamer;
 import telran.net.games.exceptions.*;
